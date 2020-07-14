@@ -6,6 +6,7 @@
 //  Copyright © 2020 justin dongwook Jung. All rights reserved.
 //
 
+import UserNotifications
 import UIKit
 
 class ViewController: UIViewController {
@@ -20,7 +21,52 @@ class ViewController: UIViewController {
         table.delegate = self
         table.dataSource = self
     }
+    
+    @IBAction func didTapAdd(){
+        guard let vc = storyboard?.instantiateViewController(identifier: "add") as? AddViewController else {
+            return
+        }
+        
+        vc.title = "New Reminder"
+        vc.navigationItem.largeTitleDisplayMode = .never
+        vc.completion = { title, body, date in
+            DispatchQueue.main.async {
+                
+            }
+        }
+        
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    
+    @IBAction func didTapTest(){
+        //Notification permission alert
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound], completionHandler: { success, error in
+            if success {
+                self.scheduleTest()
+            }
+            else if error != nil {
+                print("error occured")
+            }
+        })
+    }
 
+    func scheduleTest() {
+        let content = UNMutableNotificationContent()
+        content.title = "Hello World"
+        content.sound = .default
+        content.body = "My long body..."
+        
+        let targetDate = Date().addingTimeInterval(10)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: targetDate), repeats: false)
+        
+        let request = UNNotificationRequest(identifier: "some_long_id", content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request, withCompletionHandler: { error in
+            if error != nil {
+                print("something went wrong")
+            }
+        })
+    }
     
 }
 
