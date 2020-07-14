@@ -106,7 +106,12 @@ extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.textLabel?.text = models[indexPath.row].title
+        let date = models[indexPath.row].date
         
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM, dd, YYYY at hh:mm a"
+        
+        cell.detailTextLabel?.text = formatter.string(from: date)
         return cell
     }
 }
